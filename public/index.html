@@ -1,1 +1,988 @@
-<h1>hei</h1>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perpustakaan MTSN 2 Subang</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header" data-aos="zoom-in">
+                <i class="fas fa-book-open logo"></i>
+                <h1>Perpustakaan MTSN 2 Subang</h1>
+                <button class="toggle-sidebar" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            </div>
+            <nav>
+                <ul>
+                    <li data-aos="slide-right" data-aos-delay="100"><a href="#" onclick="showSection('dashboard')"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li data-aos="slide-right" data-aos-delay="200"><a href="#" onclick="showSection('stock')"><i class="fas fa-book"></i> Stok Buku</a></li>
+                    <li data-aos="slide-right" data-aos-delay="300"><a href="#" onclick="showSection('borrow')"><i class="fas fa-book-open"></i> Peminjaman</a></li>
+                    <li data-aos="slide-right" data-aos-delay="400"><a href="#" onclick="showSection('return')"><i class="fas fa-undo"></i> Pengembalian</a></li>
+                    <li data-aos="slide-right" data-aos-delay="500"><a href="#" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Ekspor ke Excel</a></li>
+                </ul>
+            </nav>
+            <div class="theme-toggle" data-aos="fade-up" data-aos-delay="600">
+                <button onclick="toggleTheme()"><i class="fas fa-moon"></i> <span>Tema Gelap</span></button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Notification -->
+            <div id="notification" class="notification"></div>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active" data-aos="fade-up">
+                <h2>Dashboard</h2>
+                <div class="dashboard-cards">
+                    <div class="card" data-aos="zoom-in-up" data-aos-delay="100">
+                        <i class="fas fa-books"></i>
+                        <h3>Total Buku</h3>
+                        <p id="total-books">0</p>
+                    </div>
+                    <div class="card" data-aos="zoom-in-up" data-aos-delay="200">
+                        <i class="fas fa-book-open"></i>
+                        <h3>Buku Dipinjam</h3>
+                        <p id="borrowed-books">0</p>
+                    </div>
+                    <div class="card" data-aos="zoom-in-up" data-aos-delay="300">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Buku Tersedia</h3>
+                        <p id="available-books">0</p>
+                    </div>
+                </div>
+                <div class="prayer-times" data-aos="fade-up" data-aos-delay="400">
+                    <h3>Waktu Sholat - Subang</h3>
+                    <table id="prayer-table">
+                        <thead>
+                            <tr>
+                                <th>Sholat</th>
+                                <th>Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="prayer-list">
+                            <tr><td>Subuh</td><td id="subuh">04:30</td></tr>
+                            <tr><td>Dzuhur</td><td id="dzuhur">11:50</td></tr>
+                            <tr><td>Ashar</td><td id="ashar">15:15</td></tr>
+                            <tr><td>Maghrib</td><td id="maghrib">17:45</td></tr>
+                            <tr><td>Isya</td><td id="isya">19:00</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Stock Section -->
+            <section id="stock" class="section" data-aos="fade-up">
+                <h2>Stok Buku</h2>
+                <div class="search-filter" data-aos="slide-right">
+                    <input type="text" id="search-book" placeholder="Cari buku, penulis, atau kategori...">
+                </div>
+                <div class="form-group" data-aos="slide-left">
+                    <input type="text" id="book-title" placeholder="Judul Buku">
+                    <input type="text" id="book-author" placeholder="Penulis">
+                    <input type="text" id="book-category" placeholder="Kategori (misal: Agama, Sains)">
+                    <input type="number" id="book-quantity" placeholder="Jumlah" min="1">
+                    <button onclick="addBook()">Tambah Buku</button>
+                </div>
+                <div class="table-container">
+                    <table id="book-table">
+                        <thead>
+                            <tr>
+                                <th>Judul Buku</th>
+                                <th>Penulis</th>
+                                <th>Kategori</th>
+                                <th>Jumlah</th>
+                                <th>Dipinjam</th>
+                                <th>Tersedia</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="book-list"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Borrow Section -->
+            <section id="borrow" class="section" data-aos="fade-up">
+                <h2>Peminjaman</h2>
+                <div class="search-filter" data-aos="slide-right">
+                    <input type="text" id="search-borrow" placeholder="Cari peminjam, NIS/NIP, atau buku...">
+                </div>
+                <div class="form-group" data-aos="slide-left">
+                    <input type="text" id="borrower-name" placeholder="Nama Peminjam">
+                    <input type="text" id="borrower-id" placeholder="NIS/NIP">
+                    <select id="borrow-book">
+                        <option value="">Pilih Buku</option>
+                    </select>
+                    <input type="date" id="borrow-date" value="${new Date().toISOString().split('T')[0]}">
+                    <button onclick="borrowBook()">Pinjam</button>
+                </div>
+                <div class="table-container">
+                    <table id="borrow-table">
+                        <thead>
+                            <tr>
+                                <th>Nama Peminjam</th>
+                                <th>NIS/NIP</th>
+                                <th>Judul Buku</th>
+                                <th>Tanggal Pinjam</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="borrow-list"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Return Section -->
+            <section id="return" class="section" data-aos="fade-up">
+                <h2>Pengembalian</h2>
+                <div class="search-filter" data-aos="slide-right">
+                    <input type="text" id="search-return" placeholder="Cari peminjam, NIS/NIP, atau buku...">
+                </div>
+                <div class="table-container">
+                    <table id="return-table">
+                        <thead>
+                            <tr>
+                                <th>Nama Peminjam</th>
+                                <th>NIS/NIP</th>
+                                <th>Judul Buku</th>
+                                <th>Tanggal Pinjam</th>
+                                <th>Tanggal Kembali</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="return-list"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+</body>
+</html>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+}
+
+body {
+    background-color: #e8f5e9;
+    color: #333;
+}
+
+body.dark-theme {
+    background-color: #1a2a44;
+    color: #e0e0e0;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 280px;
+    background: linear-gradient(135deg, #2c6b2f, #4caf50);
+    color: white;
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+    box-shadow: 3px 0 15px rgba(0, 0, 0, 0.2);
+    transform: translateX(0);
+    z-index: 1000;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.sidebar-header .logo {
+    font-size: 2.5rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+.sidebar-header h1 {
+    font-size: 1.3rem;
+    flex-grow: 1;
+}
+
+.toggle-sidebar {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.8rem;
+    cursor: pointer;
+    display: none;
+}
+
+.sidebar nav ul {
+    list-style: none;
+}
+
+.sidebar nav ul li a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin: 8px 0;
+    font-weight: 500;
+}
+
+.sidebar nav ul li a:hover, .sidebar nav ul li a.active {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(10px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar nav ul li a i {
+    margin-right: 15px;
+    font-size: 1.3rem;
+}
+
+.theme-toggle {
+    position: absolute;
+    bottom: 20px;
+    width: calc(100% - 40px);
+}
+
+.theme-toggle button {
+    width: 100%;
+    padding: 12px;
+    background: #3d8b40;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.theme-toggle button:hover {
+    background: #4caf50;
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.main-content {
+    margin-left: 280px;
+    padding: 30px;
+    width: calc(100% - 280px);
+    background-color: #e8f5e9;
+}
+
+body.dark-theme .main-content {
+    background-color: #1a2a44;
+}
+
+.section {
+    display: none;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+body.dark-theme .section {
+    background: #2a3b5a;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.section.active {
+    display: block;
+}
+
+h2 {
+    color: #2c6b2f;
+    margin-bottom: 25px;
+    font-weight: 700;
+    position: relative;
+    animation: slideInLeft 0.5s ease;
+}
+
+@keyframes slideInLeft {
+    0% { transform: translateX(-20px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+
+h2::after {
+    content: '';
+    width: 50px;
+    height: 3px;
+    background: #4caf50;
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    animation: expandWidth 0.5s ease;
+}
+
+@keyframes expandWidth {
+    0% { width: 0; }
+    100% { width: 50px; }
+}
+
+body.dark-theme h2 {
+    color: #4caf50;
+}
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: #e8f5e9;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+body.dark-theme .card {
+    background: #3b4a6b;
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.card i {
+    font-size: 2.5rem;
+    color: #2c6b2f;
+    margin-bottom: 15px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-12px); }
+    60% { transform: translateY(-6px); }
+}
+
+body.dark-theme .card i {
+    color: #4caf50;
+}
+
+.card h3 {
+    color: #2c6b2f;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+body.dark-theme .card h3 {
+    color: #4caf50;
+}
+
+.prayer-times {
+    background: #e8f5e9;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+body.dark-theme .prayer-times {
+    background: #3b4a6b;
+}
+
+.prayer-times h3 {
+    color: #2c6b2f;
+    margin-bottom: 15px;
+}
+
+body.dark-theme .prayer-times h3 {
+    color: #4caf50;
+}
+
+.prayer-times table {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.prayer-times th, .prayer-times td {
+    padding: 10px;
+    text-align: center;
+}
+
+.prayer-times th {
+    background: #2c6b2f;
+    color: white;
+}
+
+body.dark-theme .prayer-times th {
+    background: #4caf50;
+}
+
+.search-filter {
+    margin-bottom: 20px;
+}
+
+.search-filter input {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px 12px 12px 40px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1rem;
+    background: white url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23333" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>') no-repeat 10px center;
+    background-size: 16px;
+}
+
+body.dark-theme .search-filter input {
+    background-color: #3b4a6b;
+    border-color: #4caf50;
+    color: #e0e0e0;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23e0e0e0" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>');
+}
+
+.form-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+input, select, button {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1rem;
+    width: 100%;
+}
+
+body.dark-theme input, body.dark-theme select {
+    background: #3b4a6b;
+    border-color: #4caf50;
+    color: #e0e0e0;
+}
+
+button {
+    background: linear-gradient(135deg, #2c6b2f, #4caf50);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: left 0.4s;
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    min-width: 100px;
+}
+
+th {
+    background: #2c6b2f;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+body.dark-theme th {
+    background: #4caf50;
+}
+
+body.dark-theme td {
+    border-bottom: 1px solid #3b4a6b;
+}
+
+tr {
+    transition: background 0.3s, transform 0.3s;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+    transform: translateX(8px);
+}
+
+body.dark-theme tr:hover {
+    background-color: #3b4a6b;
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: -300px;
+    padding: 15px 25px;
+    background: #4caf50;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    transition: right 0.5s ease-in-out;
+}
+
+.notification.show {
+    right: 20px;
+}
+
+.notification.error {
+    background: #e53935;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        transform: translateX(-100%);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .toggle-sidebar {
+        display: block;
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px;
+    }
+
+    .form-group {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .prayer-times table {
+        max-width: 100%;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+
+    th, td {
+        padding: 10px;
+    }
+}
+</style>
+<script>
+  let books = JSON.parse(localStorage.getItem('books')) || [];
+let borrowRecords = JSON.parse(localStorage.getItem('borrowRecords')) || [];
+let returnRecords = JSON.parse(localStorage.getItem('returnRecords')) || [];
+const notification = document.getElementById('notification');
+
+document.addEventListener('DOMContentLoaded', () => {
+    AOS.init({ duration: 1000, once: true, easing: 'ease-in-out' });
+    updateBookList();
+    updateBorrowList();
+    updateReturnList();
+    updateDashboard();
+    populateBookDropdown();
+    loadTheme();
+    setActiveNav();
+    updatePrayerTimes();
+    // Add input listeners for search
+    document.getElementById('search-book').addEventListener('input', filterBooks);
+    document.getElementById('search-borrow').addEventListener('input', filterBorrow);
+    document.getElementById('search-return').addEventListener('input', filterReturn);
+});
+
+function showSection(sectionId) {
+    document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+    setActiveNav();
+    toggleSidebar();
+    AOS.refresh();
+}
+
+function setActiveNav() {
+    document.querySelectorAll('.sidebar nav ul li a').forEach(link => link.classList.remove('active'));
+    const activeSection = document.querySelector('.section.active').id;
+    document.querySelector(`.sidebar nav ul li a[onclick="showSection('${activeSection}')"]`).classList.add('active');
+}
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('active');
+}
+
+function toggleTheme() {
+    document.body.classList.toggle('dark-theme');
+    const themeButton = document.querySelector('.theme-toggle button');
+    themeButton.innerHTML = document.body.classList.contains('dark-theme')
+        ? `<i class="fas fa-sun"></i> <span>Tema Terang</span>`
+        : `<i class="fas fa-moon"></i> <span>Tema Gelap</span>`;
+    localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+}
+
+function loadTheme() {
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-theme');
+        document.querySelector('.theme-toggle button').innerHTML = `<i class="fas fa-sun"></i> <span>Tema Terang</span>`;
+    }
+}
+
+function showNotification(message, type = 'success') {
+    notification.textContent = message;
+    notification.className = `notification ${type} show`;
+    setTimeout(() => notification.classList.remove('show'), 3000);
+}
+
+function updatePrayerTimes() {
+    // Data statis waktu sholat untuk Subang (13 Juni 2025)
+    // Dalam aplikasi nyata, gunakan API seperti Aladhan (http://api.aladhan.com/v1/timingsByCity)
+    const prayerTimes = {
+        subuh: '04:30',
+        dzuhur: '11:50',
+        ashar: '15:15',
+        maghrib: '17:45',
+        isya: '19:00'
+    };
+    document.getElementById('subuh').textContent = prayerTimes.subuh;
+    document.getElementById('dzuhur').textContent = prayerTimes.dzuhur;
+    document.getElementById('ashar').textContent = prayerTimes.ashar;
+    document.getElementById('maghrib').textContent = prayerTimes.maghrib;
+    document.getElementById('isya').textContent = prayerTimes.isya;
+}
+
+function addBook() {
+    const title = document.getElementById('book-title').value.trim();
+    const author = document.getElementById('book-author').value.trim();
+    const category = document.getElementById('book-category').value.trim();
+    const quantity = parseInt(document.getElementById('book-quantity').value);
+    if (title && quantity > 0) {
+        const existingBook = books.find(book => book.title.toLowerCase() === title.toLowerCase());
+        if (existingBook) {
+            existingBook.quantity += quantity;
+            existingBook.author = author || existingBook.author;
+            existingBook.category = category || existingBook.category;
+            showNotification('Jumlah buku diperbarui!');
+        } else {
+            books.push({ title, author, category, quantity, borrowed: 0 });
+            showNotification('Buku berhasil ditambahkan!');
+        }
+        localStorage.setItem('books', JSON.stringify(books));
+        updateBookList();
+        updateDashboard();
+        populateBookDropdown();
+        clearInputs('book-title', 'book-author', 'book-category', 'book-quantity');
+    } else {
+        showNotification('Judul dan jumlah harus diisi!', 'error');
+    }
+}
+
+function updateBookList(filter = '') {
+    const bookList = document.getElementById('book-list');
+    bookList.innerHTML = '';
+    books
+        .filter(book => 
+            book.title.toLowerCase().includes(filter.toLowerCase()) ||
+            (book.author && book.author.toLowerCase().includes(filter.toLowerCase())) ||
+            (book.category && book.category.toLowerCase().includes(filter.toLowerCase()))
+        )
+        .forEach((book, index) => {
+            const row = document.createElement('tr');
+            row.setAttribute('data-aos', 'fade-up');
+            row.setAttribute('data-aos-delay', index * 100);
+            row.innerHTML = `
+                <td>${book.title}</td>
+                <td>${book.author || '-'}</td>
+                <td>${book.category || '-'}</td>
+                <td>${book.quantity}</td>
+                <td>${book.borrowed}</td>
+                <td>${book.quantity - book.borrowed}</td>
+                <td>
+                    <button onclick="editBook('${book.title}')">Edit</button>
+                    <button onclick="deleteBook('${book.title}')">Hapus</button>
+                </td>
+            `;
+            bookList.appendChild(row);
+        });
+    AOS.refresh();
+}
+
+function editBook(title) {
+    const book = books.find(b => b.title === title);
+    if (book) {
+        document.getElementById('book-title').value = book.title;
+        document.getElementById('book-author').value = book.author || '';
+        document.getElementById('book-category').value = book.category || '';
+        document.getElementById('book-quantity').value = book.quantity;
+        deleteBook(title, false);
+        showNotification('Silakan ubah data dan tambahkan kembali!');
+    }
+}
+
+function deleteBook(title, showNotif = true) {
+    if (!showNotif || confirm('Yakin ingin menghapus buku ini?')) {
+        books = books.filter(book => book.title !== title);
+        localStorage.setItem('books', JSON.stringify(books));
+        updateBookList();
+        updateDashboard();
+        populateBookDropdown();
+        if (showNotif) showNotification('Buku berhasil dihapus!');
+    }
+}
+
+function filterBooks() {
+    const search = document.getElementById('search-book').value;
+    updateBookList(search);
+}
+
+function borrowBook() {
+    const borrowerName = document.getElementById('borrower-name').value.trim();
+    const borrowerId = document.getElementById('borrower-id').value.trim();
+    const bookTitle = document.getElementById('borrow-book').value;
+    const borrowDate = document.getElementById('borrow-date').value;
+    if (borrowerName && borrowerId && bookTitle && borrowDate) {
+        const book = books.find(b => b.title === bookTitle);
+        if (book && book.quantity - book.borrowed > 0) {
+            book.borrowed += 1;
+            borrowRecords.push({
+                name: borrowerName,
+                id: borrowerId,
+                title: bookTitle,
+                date: new Date(borrowDate).toLocaleDateString('id-ID'),
+                returnDate: null,
+                status: 'Dipinjam'
+            });
+            localStorage.setItem('books', JSON.stringify(books));
+            localStorage.setItem('borrowRecords', JSON.stringify(borrowRecords));
+            updateBorrowList();
+            updateReturnList();
+            updateDashboard();
+            clearInputs('borrower-name', 'borrower-id', 'borrow-book', 'borrow-date');
+            document.getElementById('borrow-date').value = new Date().toISOString().split('T')[0];
+            showNotification('Peminjaman berhasil dicatat!');
+        } else {
+            showNotification('Buku tidak tersedia atau stok habis!', 'error');
+        }
+    } else {
+        showNotification('Semua field harus diisi!', 'error');
+    }
+}
+
+function updateBorrowList(filter = '') {
+    const borrowList = document.getElementById('borrow-list');
+    borrowList.innerHTML = '';
+    borrowRecords
+        .filter(record => 
+            record.name.toLowerCase().includes(filter.toLowerCase()) ||
+            record.id.toLowerCase().includes(filter.toLowerCase()) ||
+            record.title.toLowerCase().includes(filter.toLowerCase())
+        )
+        .forEach((record, index) => {
+            const row = document.createElement('tr');
+            row.setAttribute('data-aos', 'fade-up');
+            row.setAttribute('data-aos-delay', index * 100);
+            row.innerHTML = `
+                <td>${record.name}</td>
+                <td>${record.id}</td>
+                <td>${record.title}</td>
+                <td>${record.date}</td>
+                <td>${record.status}</td>
+                <td><button onclick="returnBook('${record.name}', '${record.id}', '${record.title}', '${record.date}')">Kembalikan</button></td>
+            `;
+            borrowList.appendChild(row);
+        });
+    AOS.refresh();
+}
+
+function filterBorrow() {
+    const search = document.getElementById('search-borrow').value;
+    updateBorrowList(search);
+}
+
+function returnBook(name, id, title, date) {
+    const book = books.find(b => b.title === title);
+    if (book) {
+        book.borrowed -= 1;
+        const record = borrowRecords.find(r => r.name === name && r.id === id && r.title === title && r.date === date);
+        if (record) {
+            record.returnDate = new Date().toLocaleDateString('id-ID');
+            record.status = 'Dikembalikan';
+            returnRecords.push(record);
+            borrowRecords = borrowRecords.filter(r => !(r.name === name && r.id === id && r.title === title && r.date === date));
+            localStorage.setItem('books', JSON.stringify(books));
+            localStorage.setItem('borrowRecords', JSON.stringify(borrowRecords));
+            localStorage.setItem('returnRecords', JSON.stringify(returnRecords));
+            updateBorrowList();
+            updateReturnList();
+            updateDashboard();
+            showNotification('Buku berhasil dikembalikan!');
+        }
+    } else {
+        showNotification('Buku tidak ditemukan!', 'error');
+    }
+}
+
+function updateReturnList(filter = '') {
+    const returnList = document.getElementById('return-list');
+    returnList.innerHTML = '';
+    returnRecords
+        .filter(record => 
+            record.name.toLowerCase().includes(filter.toLowerCase()) ||
+            record.id.toLowerCase().includes(filter.toLowerCase()) ||
+            record.title.toLowerCase().includes(filter.toLowerCase())
+        )
+        .forEach((record, index) => {
+            const row = document.createElement('tr');
+            row.setAttribute('data-aos', 'fade-up');
+            row.setAttribute('data-aos-delay', index * 100);
+            row.innerHTML = `
+                <td>${record.name}</td>
+                <td>${record.id}</td>
+                <td>${record.title}</td>
+                <td>${record.date}</td>
+                <td>${record.returnDate || '-'}</td>
+                <td>${record.status}</td>
+                <td><button disabled>Kembalikan</button></td>
+            `;
+            returnList.appendChild(row);
+        });
+    AOS.refresh();
+}
+
+function filterReturn() {
+    const search = document.getElementById('search-return').value;
+    updateReturnList(search);
+}
+
+function updateDashboard() {
+    const totalBooks = books.reduce((sum, book) => sum + book.quantity, 0);
+    const borrowedBooks = books.reduce((sum, book) => sum + book.borrowed, 0);
+    const availableBooks = totalBooks - borrowedBooks;
+    document.getElementById('total-books').textContent = totalBooks;
+    document.getElementById('borrowed-books').textContent = borrowedBooks;
+    document.getElementById('available-books').textContent = availableBooks;
+}
+
+function populateBookDropdown() {
+    const dropdown = document.getElementById('borrow-book');
+    dropdown.innerHTML = '<option value="">Pilih Buku</option>';
+    books.forEach(book => {
+        if (book.quantity - book.borrowed > 0) {
+            const option = document.createElement('option');
+            option.value = book.title;
+            option.textContent = `${book.title} ${book.author ? `(${book.author})` : ''} ${book.category ? `[${book.category}]` : ''}`;
+            dropdown.appendChild(option);
+        }
+    });
+}
+
+function clearInputs(...ids) {
+    ids.forEach(id => document.getElementById(id).value = '');
+}
+
+function exportToExcel() {
+    const workbook = XLSX.utils.book_new();
+    
+    // Sheet for Books
+    const bookData = books.map(book => ({
+        Judul: book.title,
+        Penulis: book.author || '-',
+        Kategori: book.category || '-',
+        Jumlah: book.quantity,
+        Dipinjam: book.borrowed,
+        Tersedia: book.quantity - book.borrowed
+    }));
+    const bookSheet = XLSX.utils.json_to_sheet(bookData);
+    XLSX.utils.book_append_sheet(workbook, bookSheet, 'Stok Buku');
+
+    // Sheet for Borrow Records
+    const borrowData = borrowRecords.map(record => ({
+        Nama: record.name,
+        'NIS/NIP': record.id,
+        'Judul Buku': record.title,
+        'Tanggal Pinjam': record.date,
+        Status: record.status
+    }));
+    const borrowSheet = XLSX.utils.json_to_sheet(borrowData);
+    XLSX.utils.book_append_sheet(workbook, borrowSheet, 'Peminjaman');
+
+    // Sheet for Return Records
+    const returnData = returnRecords.map(record => ({
+        Nama: record.name,
+        'NIS/NIP': record.id,
+        'Judul Buku': record.title,
+        'Tanggal Pinjam': record.date,
+        'Tanggal Kembali': record.returnDate || '-',
+        Status: record.status
+    }));
+    const returnSheet = XLSX.utils.json_to_sheet(returnData);
+    XLSX.utils.book_append_sheet(workbook, returnSheet, 'Pengembalian');
+
+    // Export
+    const date = new Date().toLocaleDateString('id-ID').replace(/\//g, '-');
+    XLSX.writeFile(workbook, `Perpustakaan_MTSN2Subang_${date}.xlsx`);
+    showNotification('Data terakhir berhasil diekspor ke Excel!');
+}
+</script>
