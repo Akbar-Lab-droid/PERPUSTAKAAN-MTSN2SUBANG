@@ -57,5 +57,3 @@ pip install -r requirements.txt
 
 # Jalankan aplikasi
 python app.py
-
----
