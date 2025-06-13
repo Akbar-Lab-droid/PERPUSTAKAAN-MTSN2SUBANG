@@ -52,8 +52,5 @@
 git clone https://github.com/username/perpustakaan-mtsn2subang.git
 cd perpustakaan-mtsn2subang
 
-# Install dependensi
-pip install -r requirements.txt
-
-# Jalankan aplikasi
-python app.py
+# kelanjutan ?
+masih dalam pengembangan mohon dukungannya dengan cara like / donate ke dana 08978691600
