@@ -1,46 +1,71 @@
-# 📚✨ Aplikasi Perpustakaan Digital MTsN 2 Subang
+<h1 align="center">
+  📖✨ Perpustakaan Digital MTsN 2 Subang ✨📖  
+</h1>
 
-Selamat datang di repositori **Perpustakaan Digital MTsN 2 Subang**!  
-Website ini dibuat untuk memudahkan proses peminjaman, pengembalian, dan manajemen stok buku secara digital dan praktis.
+<p align="center">
+  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3gwZ2liemtyNnZsM3Uya21md3U4ZWg1dm9ld2hwbjQwY2hyMzJvdiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26tn33aiTi1jkl6H6/giphy.gif" width="200"/>
+</p>
 
----
-
-## 🎯 Fitur Utama
-
-✅ Login khusus untuk petugas  
-✅ Dashboard statistik pengguna & buku  
-✅ Animasi UI/UX keren bernuansa **hijau islami** 🌿  
-✅ Riwayat peminjaman & pengembalian tersimpan otomatis  
-✅ Data tersambung langsung ke Excel  
-✅ Backend menggunakan **Python Flask**  
-✅ Desain responsive & ringan
+<p align="center">
+  <b>Sistem Perpustakaan Digital Interaktif untuk MTsN 2 Subang</b><br>
+  Peminjaman & pengembalian buku jadi lebih mudah, cepat, dan otomatis 🚀
+</p>
 
 ---
 
-## 📷 Preview UI (dengan animasi!)
+## 🎯 Fitur Unggulan
 
-![Dashboard Animasi](https://raw.githubusercontent.com/username/project-name/main/assets/animated-dashboard.gif)  
-*Contoh dashboard dengan animasi statistik*
-
-![Login Page](https://raw.githubusercontent.com/username/project-name/main/assets/login-animation.gif)  
-*Halaman login dengan transisi smooth*
+✨ Animasi UI/UX modern dan interaktif  
+🌿 Tema Islami Hijau — elegan & nyaman di mata  
+📚 Peminjaman & pengembalian buku digital  
+👤 Login petugas (admin)  
+📊 Dashboard real-time statistik buku & pengguna  
+📁 Integrasi ekspor ke Excel (otomatis)
 
 ---
 
-## 🛠️ Teknologi yang Digunakan
+## 🎨 Preview Tampilan (Animated)
 
-| Frontend      | Backend         | Database     | Ekspor Data   |
-|---------------|------------------|--------------|---------------|
-| HTML, Tailwind CSS, JS | Python Flask | SQLite / JSON | Excel (.xlsx) |
+### 🔐 Halaman Login
+![Login Page](https://raw.githubusercontent.com/username/project-name/main/assets/login-animated.gif)
+
+### 📊 Dashboard Buku
+![Dashboard](https://raw.githubusercontent.com/username/project-name/main/assets/dashboard-ui.gif)
+
+### 🔄 Riwayat Peminjaman
+![Riwayat](https://raw.githubusercontent.com/username/project-name/main/assets/riwayat-animated.gif)
+
+---
+
+## 🧩 Teknologi yang Digunakan
+
+| 🌐 Frontend | ⚙️ Backend | 🗄️ Database | 📤 Export |
+|------------|-------------|--------------|-----------|
+| HTML, Tailwind CSS, JavaScript | Python Flask | SQLite / JSON | Excel (.xlsx) |
 
 ---
 
 ## 🚀 Cara Menjalankan
 
 ```bash
-# Clone repositori
+# Clone repository
 git clone https://github.com/username/perpustakaan-mtsn2subang.git
 cd perpustakaan-mtsn2subang
 
-# Jalankan backend
+# Install dependensi
+pip install -r requirements.txt
+
+# Jalankan aplikasi
 python app.py
+
+---
+
+### 📦 BONUS:
+Kalau kamu belum punya animasi `.gif` untuk login, dashboard, dll — aku bisa bantu buatkannya:
+
+- UI animasi halaman login
+- Dashboard statistik animatif
+- Riwayat peminjaman dengan efek transisi
+- Tombol interaktif beranimasi islami hijau
+
+> Mau saya buatkan animasi dan tampilannya sekalian? Cukup bilang desain seperti apa yang kamu mau (misal: modern card, glassmorphism, islami, dsb).
