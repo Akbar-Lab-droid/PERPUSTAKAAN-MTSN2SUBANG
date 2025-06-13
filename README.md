@@ -53,4 +53,4 @@ git clone https://github.com/username/perpustakaan-mtsn2subang.git
 cd perpustakaan-mtsn2subang
 
 # kelanjutan ?
-masih dalam pengembangan mohon dukungannya dengan cara like / donate ke dana 08978691600
+masih dalam pengembangan mohon dukungannya dengan cara like / donate doa
