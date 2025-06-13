@@ -59,13 +59,3 @@ pip install -r requirements.txt
 python app.py
 
 ---
-
-### 📦 BONUS:
-Kalau kamu belum punya animasi `.gif` untuk login, dashboard, dll — aku bisa bantu buatkannya:
-
-- UI animasi halaman login
-- Dashboard statistik animatif
-- Riwayat peminjaman dengan efek transisi
-- Tombol interaktif beranimasi islami hijau
-
-> Mau saya buatkan animasi dan tampilannya sekalian? Cukup bilang desain seperti apa yang kamu mau (misal: modern card, glassmorphism, islami, dsb).
